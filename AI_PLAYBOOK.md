@@ -47,16 +47,101 @@ CLAUDE.md lives at the root of your repository (or in directories where context 
 ```markdown
 # CLAUDE.md
 
+*This file tells AI how to work in this codebase. It implements our AI Constitution.*
+
+---
+
+## Who We Are
+
+We are craftspeople who pair program, practice outside-in TDD, and build software
+that matters. AI is a tool we use together—it accelerates our work but does not
+replace our thinking.
+
+**AI accelerates. The pair deliberates.**
+
+---
+
+## How AI Must Work Here
+
+### The Contract Hierarchy
+
+We work top-down. Each level constrains the next:
+
+```
+User Stories (human value, journeys, acceptance criteria)
+    ↓ constrain
+Technical Specs (APIs, interfaces, contracts)
+    ↓ constrain
+Tests (behavioral verification)
+    ↓ constrain
+Implementation (code that fulfills contracts)
+```
+
+AI may not add to a lower level what isn't justified by a higher level.
+
+### What AI Must Never Do
+
+1. **Never write the first failing test** — Tests are specifications. Writing the
+   test is the moment of design. Humans write tests; AI assists implementation
+   after the test exists and fails.
+
+2. **Never decide architecture** — AI may explore options and propose approaches.
+   Humans make the final call and must be able to defend the decision.
+
+3. **Never expand scope** — AI implements what is specified. Suggestions beyond
+   acceptance criteria must be flagged, not implemented.
+
+4. **Never skip understanding** — If humans don't understand the generated code,
+   it doesn't get accepted.
+
+### What AI Should Do
+
+- Follow the conventions in this file
+- Ask clarifying questions when requirements are ambiguous
+- Propose options with tradeoffs, not single solutions
+- Reference existing patterns in the codebase
+- Flag concerns rather than silently working around them
+
+---
+
+## TDD: The Red-Green-Refactor Cycle
+
+### Red Phase (Human Territory)
+- Human writes a failing test
+- The test name IS the specification
+- AI watches and learns context
+- **AI does not write or suggest tests in this phase**
+
+### Green Phase (AI May Assist)
+- The test exists and fails
+- AI may suggest the simplest implementation that passes
+- Human reviews, modifies, accepts or rejects
+- AI implements to the test, not beyond
+
+### Refactor Phase (Human-Led)
+- Tests are green
+- Human decides what to improve
+- AI may suggest refactoring patterns
+- Human must articulate *why* the refactoring improves design
+
+---
+
 ## Project Overview
+
 [2-3 sentences: What is this project? Who uses it? What problem does it solve?]
 
+---
+
 ## Architecture Philosophy
+
 [The WHY behind structural decisions. Not documentation—wisdom.]
 
 Example:
 - We use hexagonal architecture because we swap infrastructure frequently
 - Domain logic never imports from infrastructure; adapters bridge the gap
 - Every external dependency is behind an interface we control
+
+---
 
 ## Code Conventions
 
@@ -75,16 +160,21 @@ Example:
 - No magic strings (constants or enums)
 - No business logic in controllers
 
-## Testing Philosophy
-[How we think about tests—not just how to run them]
+---
 
-Example:
+## Testing Philosophy
+
 - Outside-in TDD: Start with acceptance test, work inward
 - Test behavior, not implementation
-- One assertion per test where possible
-- Test names describe the behavior: `should_reject_payment_when_insufficient_funds`
+- One assertion per test where practical
+- Test names describe behavior: `should_reject_payment_when_insufficient_funds`
+- Use factories over fixtures: `/test/factories/`
+- Mock external services, not internal modules
+
+---
 
 ## Directory Structure
+
 ```
 src/
 ├── domain/          # Pure business logic, no dependencies
@@ -93,10 +183,16 @@ src/
 └── presentation/    # Controllers, views, CLI
 ```
 
+---
+
 ## Current Focus
+
 [What the team is actively working on—gives AI context for priorities]
 
+---
+
 ## Known Complexity
+
 [Areas where AI should tread carefully]
 
 Example:
@@ -104,7 +200,10 @@ Example:
 - `PaymentProcessor` — Complex state machine, read thoroughly before touching
 - Date handling — All dates are UTC internally, converted at boundaries
 
+---
+
 ## Commands
+
 ```bash
 npm test              # Run all tests
 npm run test:watch    # TDD mode
@@ -112,13 +211,22 @@ npm run lint          # Must pass before commit
 npm run build         # Verify before pushing
 ```
 
-## Review Checklist
-Before suggesting code is complete, verify:
+---
+
+## Before Suggesting Code is Complete
+
+AI must verify:
 - [ ] Tests pass
 - [ ] No new lint warnings
 - [ ] Follows naming conventions above
 - [ ] No business logic leaked into infrastructure
 - [ ] Changes traced to acceptance criteria
+- [ ] Code could be explained to a colleague
+- [ ] Reviewed git history for context on modified files
+
+---
+
+*When in doubt, ask. When ambiguous, clarify. When unsure, flag.*
 ```
 
 ### Practical Scenarios
@@ -1133,7 +1241,7 @@ Driver writes failing test. AI assists with implementation.
 1. Driver writes test → test fails
 2. AI uses: terminal MCP → confirms test fails (red)
 3. AI suggests implementation
-4. Driver types implementation
+4. Driver reviews, understands, and accepts implementation
 5. AI uses: terminal MCP → confirms test passes (green)
 6. Pair discusses refactoring
 7. AI suggests refactor
@@ -2408,11 +2516,11 @@ The pair is two humans. AI is a tool, not a third pair member. The dynamics of p
 2. Navigator frames the question
 3. AI responds
 4. Navigator and Driver discuss the response
-5. Driver implements (typing, not pasting)
+5. Driver implements (accepting AI code only if both understand it)
 6. Both understand before moving on
 ```
 
-**The key**: AI talks to the pair, not to individuals. Both must understand.
+**The key**: AI talks to the pair, not to individuals. Both must understand. The keyboard is not the bottleneck—understanding is.
 
 ### Practical Scenarios
 
@@ -2440,24 +2548,27 @@ Navigator: "AI showed me—it's in /src/domain/events.
 Driver: "I see the pattern. I'll write the new event."
 ```
 
-**Scenario 2: Driver Resists Paste Temptation**
+**Scenario 2: Driver Ensures Understanding**
 
 ```
 AI suggests a 15-line implementation.
 
-Driver: "That looks right, but I'm going to type it out.
-        Explain as I go?"
+Driver: "That looks plausible. Walk me through it before
+        I accept it?"
 
-Navigator: "Sure. Start with the interface..."
+Navigator: "Sure. The first part sets up the interface..."
 
-[Driver types, Navigator explains]
+[Navigator explains, Driver follows]
 
 Driver: "Wait, what's this Result.mapError doing?"
 
 Navigator: "It transforms the error type. Let's look at
            how we use it elsewhere..."
 
-[Pair learns a pattern they would have missed by pasting]
+[Pair learns a pattern they might have missed without discussion]
+
+Driver: "Got it. Now I can debug this if it breaks.
+        Accepting the code."
 ```
 
 **Scenario 3: Pair Rejects AI Suggestion**
@@ -2737,7 +2848,7 @@ When AI-related issues occur, add these questions to your retrospective:
 | Phase | Human Does | AI May Do |
 |-------|------------|-----------|
 | Red | Write failing test | Watch, learn context |
-| Green | Type implementation | Suggest implementation |
+| Green | Review and accept implementation | Suggest implementation |
 | Refactor | Decide what to improve | Suggest refactorings |
 
 ### Daily Checklist
