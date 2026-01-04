@@ -44,7 +44,7 @@ CLAUDE.md lives at the root of your repository (or in directories where context 
 
 ### The Template
 
-```markdown
+````markdown
 # CLAUDE.md
 
 *This file tells AI how to work in this codebase. It implements our AI Constitution.*
@@ -227,7 +227,7 @@ AI must verify:
 ---
 
 *When in doubt, ask. When ambiguous, clarify. When unsure, flag.*
-```
+````
 
 ### Practical Scenarios
 
@@ -307,7 +307,7 @@ These serve different purposes and different audiences:
 
 ### The Template
 
-```markdown
+````markdown
 # AGENTS.md
 
 ## Project Overview
@@ -439,7 +439,7 @@ See CLAUDE.md for architectural philosophy and patterns.
 - Check existing similar code first
 - Ask in #engineering Slack
 - Escalate ambiguity rather than assume
-```
+````
 
 ### Hierarchical Resolution
 
@@ -773,7 +773,7 @@ AGENTS.md for this setup:
 
 Integrating with a partner's AI service:
 
-```markdown
+````markdown
 ## External Agent: PartnerPaymentAgent
 
 **Discovery**: https://partner.example.com/.well-known/agent.json
@@ -810,7 +810,7 @@ if response.status == "failed":
     else:
         escalate_to_human(response.error)
 ```
-```
+````
 
 **Scenario 3: Multi-Vendor Agent Ecosystem**
 
@@ -2029,7 +2029,7 @@ Users need to export their data for GDPR compliance and personal records.
 ```
 
 **3. Technical Plan**
-```markdown
+````markdown
 # Technical Plan: User Profile Export
 
 ## Approach
@@ -2056,7 +2056,7 @@ Request → Auth Check → ExportService
 ## Open Questions
 - [ ] Should we encrypt the download? (Ask security team)
 - [ ] Rate limiting policy? (Ask product)
-```
+````
 
 **4. Tasks Breakdown**
 ```markdown
